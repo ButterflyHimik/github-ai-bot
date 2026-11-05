@@ -74,7 +74,7 @@ flowchart LR
     B --> C[Setup Node 20<br/>checkout code]
     C --> D[Read PR diff<br/>via GitHub API]
     D --> E[analyze.js<br/>heuristic engine]
-    E --> F{Score<br/>+ Issues}<br/>
+    E --> F{Score<br/>+ Issues}
     F --> G[Build Markdown<br/>review comment]
     G --> H[Post comment<br/>on PR via API]
     H --> I[✅ Done]
@@ -96,10 +96,18 @@ flowchart LR
 Want to add new checks? Edit `src/analyze.js` — each check is a self-contained block in the per-file loop:
 
 ```js
-// Add this inside the `for (const file of files)` loop:
-const unusedImports = extractAddedLines(file.patch)
-  .filter(l => /import\s+\w+\s+from\s+/g.test(l))
-  .filter(l => !/import\s+\w+/g.test(l)); // simplistic — extend as needed
+// Example: add a check for excessive imports
+const importCount = extractAddedLines(file.patch)
+  .filter(l => /^\s*import\s+/).length;
+
+if (importCount > 10 && !isTestFile(file.path)) {
+  analysis.issues.push({
+    file: file.path,
+    type: 'imports',
+    message: `${importCount} import lines added — consider splitting this module`,
+    severity: 'low'
+  });
+}
 ```
 
 ---
@@ -110,4 +118,4 @@ const unusedImports = extractAddedLines(file.patch)
 
 ---
 
-*Made by [🦋 ButterflyHimik](https://github.com/ButterflyHimik) with 💛* 
+*Made by [🦋 ButterflyHimik](https://github.com/ButterflyHimik) with 💛*
