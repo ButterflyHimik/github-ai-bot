@@ -7,7 +7,7 @@
 
 function getPathExtension(path) {
   const name = path.split('/').pop().toLowerCase();
-  const ext = name.split('.').pop();
+  const ext = (name.match(/\.[^\.]+$/) || [''])[0].slice(1);
   const extMap = {
     js: 'JavaScript', jsx: 'JavaScript (JSX)',
     ts: 'TypeScript', tsx: 'TypeScript (TSX)',
@@ -74,9 +74,11 @@ export function analyzePR(pr, files) {
 
     const addedLines = extractAddedLines(file.patch);
 
+    const isJS = ['JavaScript', 'JavaScript (JSX)', 'TypeScript', 'TypeScript (TSX)'].includes(getPathExtension(file.path));
+
     // ── console.log / console.error in source (skip tests) ──
     if (['JavaScript', 'JavaScript (JSX)', 'TypeScript', 'TypeScript (TSX)'].includes(getPathExtension(file.path))) {
-      const consoleLines = addedLines.filter(l => /console\.(log|error|warn)\s*\(/.test(l));
+      const consoleLines = addedLines.filter(l => isJS && /console\.(log|error|warn)\s*\(/.test(l));
       if (consoleLines.length > 0 && !isTestFile(file.path)) {
         analysis.issues.push({
           file: file.path,
