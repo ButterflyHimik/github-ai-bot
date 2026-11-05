@@ -33,7 +33,7 @@ jobs:
           node-version: '20'
 
       - name: Install pkg (build-time only)
-        run: npm i pkg@8 --no-save
+        run: npm i pkg@latest --no-save
 
       - name: Build single binary (Windows x64)
         run: npx pkg --platform windows --target x64 --output github-ai-bot.exe .

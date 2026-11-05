@@ -63,7 +63,12 @@ The bot will automatically post a review comment.
 src/
 ├── index.js                # Main entry: PR → analysis → comment
 ├── github-api.js           # GitHub REST API client (zero deps)
-└── analyze.js              # Heuristic code analysis engine
+├── analyze.js              # Heuristic code analysis engine
+└── buildComment.js         # Markdown review comment builder (exported)
+tests/
+├── analyze.test.js         # Unit tests for analyzePR + buildComment
+└── smoke.test.js           # API smoke tests (no-token → 401, no throw)
+```
 ```
 
 ### How it works
