@@ -1,0 +1,12 @@
+{
+  "name": "github-ai-bot",
+  "version": "1.0.0",
+  "description": "AI-powered code review bot for GitHub PRs — zero dependencies, pure Node.js",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "bin": { "github-ai-bot": "./src/index.js" },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  }
+}

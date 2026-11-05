@@ -1,0 +1,45 @@
+name: 💏 Tests + 👿 Binary
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run unit tests (node --test)
+        run: node --test
+
+  build-win64:
+    if: github.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pkg (build-time only)
+        run: npm i pkg@8 --no-save
+
+      - name: Build single binary (Windows x64)
+        run: npx pkg --platform windows --target x64 --output github-ai-bot.exe .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-ai-bot
+          path: github-ai-bot.exe
